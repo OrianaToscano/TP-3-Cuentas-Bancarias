@@ -17,14 +17,14 @@
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
                 <h3>Máximos y mínimos</h3>
                 <div class="form-group">                
-                    <button class="form-check-control btn btn-info">Obtener mayor</button>
-                    <button class="form-check-control btn btn-info">Obtener mayor dólares</button>
-                    <button class="form-check-control btn btn-info">Obtener menor</button>
-                    <button class="form-check-control btn btn-info">Obtener menor dólares</button>
+                    <button class="form-check-control btn btn-info" onclick="obtenerMayor()">Obtener mayor</button>
+                    <button class="form-check-control btn btn-info" onclick='obtenerMayorDolares()'>Obtener mayor dólares</button>
+                    <button class="form-check-control btn btn-info" onclick="obtenerMenor()">Obtener menor</button>
+                    <button class="form-check-control btn btn-info" onclick="obtenerMenorDolares()">Obtener menor dólares</button>
                 </div>
             </div>
             <!--Div para cargar la información de una cuenta-->
-            <div class="col-auto shadow p-3 mb-5 bg-white rounded">
+            <div class="col-auto shadow p-3 mb-5 bg-white rounded" id="infoCuenta">
             </div>
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
                 <h3>Listados</h3>
