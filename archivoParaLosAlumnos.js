@@ -87,10 +87,10 @@
 
     8) Implementar una función para el botón "Obtener menor dólares" que me indique cuál es el cliente que tiene menos 
         plata en dólares en todo el banco. La información de este cliente se deberá mostrar por DOM. Sería buena idea 
-        modificar la función del punto 6 para que reciba un parámetro que indique en qué moneda se quiere buscar.
+        modificar la función del punto 6 para que reciba un parámetro que indique en qué moneda se quiere buscar. --ya esta--
 
     9) Implementar una función para el botón "Listar clientes" que muestre todos los clientes del banco en una tabla.
-        Indicar en la misma los datos que usted quiera, mínimamente apellido y DNI.
+        Indicar en la misma los datos que usted quiera, mínimamente apellido y DNI. --YA ESTA--
 
     10) Implementar una función para el botón "Listar clientes CSV" que muestre todos los clientes del banco por 
         consola. Se deberá mostrar en el formato "Apellido1, Nombre1; Apellido2, Nombre2; Apellido3, Nombre3; etc.".
@@ -156,7 +156,7 @@ class Cliente{
     constructor(dni, nombre, apellido, saldoEnPesos, saldoEnDolares){
         this.dni = dni
         this.nombre = nombre
-        this.nombre = apellido
+        this.apellido = apellido
         this.saldoEnPesos = saldoEnPesos
         this.saldoEnDolares = saldoEnDolares
         this.consumosTajeta = []
@@ -181,10 +181,13 @@ class Cliente{
 
         if(typeof identificadorCuenta == 'number'){
             for(let i=0 ; i<clientesBanco.length ; i++){
-                (clientesBanco[i].dni == identificadorCuenta) && clientesBanco[i].ingresarDinero(unaCantidad,'saldoEnPesos');
+                (clientesBanco[i].dni == identificadorCuenta) && clientesBanco[i].ingresarDinero(unaCantidad,'saldoEnPesos') 
             } 
         }else if(typeof identificadorCuenta == 'object'){
-            identificadorCuenta.ingresarDinero(unaCantidad,'saldoEnPesos');}
+            identificadorCuenta.ingresarDinero(unaCantidad,'saldoEnPesos');
+        }else{
+            console.log("El identificador ingreasado no existe (no es ni el dni ni el objeto)")
+        }
     }
     
     pagarConTarjeta(compra, monto){
@@ -219,4 +222,38 @@ const cliente3 = new Cliente(40654321, 'Julieta', 'Albornoz', 7300, 5000);
 
 clientesBanco.push(cliente1,cliente2,cliente3);
 
+function listarClientes(){
+    tablaClientes = document.getElementById("listadoClientes").innerHTML
+    tablaClientes += `
+    <thead>
+    <tr>
+        <th>DNI</th>
+        <th>Apellido</th>
+        <th>Nombre</th>
+    </tr>
+    </thead>
+    <tbody>
+    `
+
+    for(let i=0 ; clientesBanco.length>i ; i++){
+        tablaClientes += `
+        <tr>
+        <td> <b>${clientesBanco[i].dni}</b> </td>
+        <td> ${clientesBanco[i].apellido} </td>
+        <td> ${clientesBanco[i].nombre} </td>
+        `
+    }
+    document.getElementById("listadoClientes").innerHTML = tablaClientes
+}
+
+
+function listarClientesCSV(){
+    console.log(clientesBanco)
+    let listadoCSV="";
+    for(let i=0;clientesBanco.length>i;i++){
+        listadoCSV += `${clientesBanco[i].apellido}, ${clientesBanco[i].nombre} `;
+        (i != clientesBanco.length-1)&&(listadoCSV=`;`);
+    };
+    console.log(listadoCSV);
+}
 
