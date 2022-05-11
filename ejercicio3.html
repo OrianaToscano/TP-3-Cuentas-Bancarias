@@ -29,14 +29,15 @@
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
                 <h3>Listados</h3>
                 <div class="form-group">
-                    <button class="form-check-control btn btn-info">Listar clientes</button>
-                    <button class="form-check-control btn btn-success">Listar clientes CSV</button>
-                    <button class="form-check-control btn btn-danger">Listar morosos</button>
+                    <button class="form-check-control btn btn-info" onclick="listarClientes()" >Listar clientes</button>
+                    <button class="form-check-control btn btn-success"onclick="listarClientesCSV()">Listar clientes CSV</button>
+                    <button class="form-check-control btn btn-danger"onclick="listarMorosos()">Listar morosos</button>
                     <br>
                     <label for="searchByContent">Buscar clientes por apellido o DNI</label>
                     <input class="form-control" type="text">
                 </div>
                 <table class="table">
+
                 </table>
             </div>
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
