@@ -167,6 +167,7 @@ class Cliente{
         if(this[queCuenta] == this.saldoEnDolares && this.saldoEnDolares < unaCantidad){
             return false;
         }else{
+            this[queCuenta] -= unaCantidad
             return true;
         }
     }
@@ -177,7 +178,6 @@ class Cliente{
 
     transferirDinero(identificadorCuenta, unaCantidad){
         this.extraerDinero(unaCantidad, 'saldoEnPesos')
-        this.saldoEnPesos -= unaCantidad
 
         if(typeof identificadorCuenta == 'number'){
             for(let i=0 ; i<clientesBanco.length ; i++){
@@ -217,14 +217,105 @@ class ComprasRealizadas{
 let clientesBanco = [];
 
 const cliente1 = new Cliente(12812846, 'Raul', 'Gómez',87000,500);
-const cliente2 = new Cliente(25654321, 'Sebastián', 'Perez',15200,3900);
+const cliente2 = new Cliente(25654321, 'Sebastián', 'Perez',-15200,3900);
 const cliente3 = new Cliente(40654321, 'Julieta', 'Albornoz', 7300, 5000);
 
 clientesBanco.push(cliente1,cliente2,cliente3);
 
+// ------------------------------------- OBTENER DATOS -----------------------------------------------
+
+function obtenerDatos(queCuenta,mayorOMenor){
+
+    // ----------- establece cual es el cliente a mostar ---------------
+
+    var clientesBancoLocal = Object.assign([],clientesBanco)
+    var saldosDeClientes = clientesBancoLocal.map(i => i[queCuenta] );
+    var cliente;
+
+    if(mayorOMenor === 'mayor'){
+        cliente = clientesBancoLocal[ saldosDeClientes.indexOf(Math.max(...saldosDeClientes)) ];
+
+    }else if(mayorOMenor === 'menor'){
+        for(let i=0 ; saldosDeClientes.length>i ; i++){
+            if(saldosDeClientes[i]<0){
+                saldosDeClientes.splice(i,1);
+                clientesBancoLocal.splice(i,1);
+            }
+        }
+        cliente = clientesBancoLocal[ saldosDeClientes.indexOf(Math.min(...saldosDeClientes)) ];
+    }
+    
+    
+    // -----------------------------------------------------------------
+
+    let infoCuenta = document.getElementById("infoCuenta").innerHTML;
+    
+    infoCuenta = `
+    <h3>Información de la cuenta</h3>
+    <h5>Cliente solicitado:</h5>
+    <ul>
+        <li>DNI: <b>${cliente.dni}</b></li>
+        <li>Apellido: <b>${cliente.apellido}</b></li>
+        <li>Nombre: <b>${cliente.nombre}</b></li>
+        <li>Saldo en cuenta en pesos: <b>$ ${cliente.saldoEnPesos}</b></li>
+        <li>Saldo en cuenta en dólares: <b>U$S ${cliente.saldoEnDolares}</b></li>
+        <li>Saldo pendiente de pago en la tarjeta: <b>$ ${cliente.saldoAPagarTarjeta}</b></li>
+    `
+
+    if(cliente.consumosTajeta.length === 0){
+        infoCuenta += `
+            <li>Últimos consumos: <b>Aún no hay consumos</b></li>
+        </ul>`
+    }else{
+        infoCuenta += `
+            <li>Últimos consumos:</li>
+        </ul>
+        <table class="table">
+            <thead><bold>
+                <tr>
+                    <th>Local</th>
+                    <th>Consumo</th>
+                </tr>
+            <bold></thead>
+        <tbody id="tableBody">`
+
+        for(let i=0 ; cliente.consumosTajeta.length>i ; i++){
+            infoCuenta += `
+            <tr>
+                <td>${cliente.consumosTajeta[i].compra}</td>
+                <td>${cliente.consumosTajeta[i].monto}</td>
+            </tr>`
+        }
+
+        infoCuenta += `</tbody>`
+    }
+
+    document.getElementById("infoCuenta").innerHTML = infoCuenta;
+}
+
+function obtenerMayor(){
+    obtenerDatos('saldoEnPesos','mayor');
+}
+
+function obtenerMayorDolares(){
+    obtenerDatos('saldoEnDolares','mayor');
+}
+
+function obtenerMenor(){
+    obtenerDatos('saldoEnPesos','menor');
+}
+
+function obtenerMenorDolares(){
+    obtenerDatos('saldoEnDolares','menor');
+}
+
+// ---------------------------------------------------------------------------------------------------
+
+// ------------------------------------- LISTAR DATOS -----------------------------------------------
+
 function listarClientes(){
     tablaClientes = document.getElementById("listadoClientes").innerHTML
-    tablaClientes += `
+    tablaClientes = `
     <thead>
     <tr>
         <th>DNI</th>
@@ -246,7 +337,6 @@ function listarClientes(){
     document.getElementById("listadoClientes").innerHTML = tablaClientes
 }
 
-
 function listarClientesCSV(){
     console.log(clientesBanco)
     let listadoCSV="";
@@ -258,12 +348,8 @@ function listarClientesCSV(){
 }
 
 function listarMorosos(){
-    let listadoMorosos=[];
-    for(let i=0;clientesBanco.length>i;i++){
-        if (clientesBanco[i].saldoEnPesos<0){
-            listadoMorosos.push(clientesBanco[i]);
-        }
-    }
+    let listadoMorosos= clientesBanco.map(i => indexOf(clientesBanco[i].saldoEnPesos<0));
+
     tablaMorosos = document.getElementById("listadoMorosos").innerHTML
     tablaMorosos += `
     <thead>
@@ -286,3 +372,61 @@ function listarMorosos(){
     }
     document.getElementById("listadoMorosos").innerHTML = tablaMorosos
 }
+
+// --------------------------------------------------------------------------------------------------
+
+
+// ------------------------------------- FUNCIONES OPCIONALES --------------------------------------------
+function mostrarOcultar(id){
+    let seccion = document.getElementById(id)
+    seccion.style.display = (seccion.style.display == 'none' ? 'block' : 'none')                // none == oculto, block == visible; si no es una, tiene que ser la otra
+
+    document.ingresoDatos.reset() // limpia los datos anteriores para poder ingresar nuevos sin tener que borrar manualmente los anteriores
+}
+
+function agregarDatos(){
+    let inputs = document.getElementsByName('datosNuevoCliente')
+
+    // listaInputs: [0] = nombre, [1] = apellido, [2] = dni, [3] = pesos, [4] = dolares
+    let listaInputs = Array.from(inputs).map((dato,index) => {                                  // inputs es un formato que no se puede leer como lista, entonces hace 
+        if([3,4].includes(index)){                                                              // Array.from = crea un array desde inputs. A su vez, se "filtran" los 
+            return parseFloat(dato.value)                                                       // valores con un .map, que tiene 2 condiciones (si el indice es 3 o 4,
+        }else{                                                                                  // o sea, peso o dolar), ingresa el valor a listaInputs como Float, sino,
+            return dato.value}                                                                  // pasa como string. Nos evitamos hacer un for para filtrar dsp. 
+    }   )
+    
+    if(listaInputs.includes("")){
+        return alert("Todos los campos deben estar completados")
+    } if(listaInputs.some((dato,index) => dato<0 && index==4)){                                 // metodo .SOME chequea si algun valor del array cumple con la condicion
+        return alert("El monto en dolares debe ser positivo")
+    }
+
+    let nuevoCliente = new Cliente(listaInputs[2], listaInputs[0], listaInputs[1], listaInputs[3], listaInputs[4])
+    clientesBanco.push(nuevoCliente)
+    
+    return alert("Cliente ingresado con éxito")
+}
+
+// ------------------------------------------------------------------------------------------------------
+
+// pagina que puede servir opa https://www.javascripttutorial.net/javascript-dom/javascript-select-box/ 
+
+function buscarCliente(){
+    let input = (document.getElementsByName("buscarCliente")[0].value)
+    
+    if([1,2,3,4,5,6,7,8,9,0].includes(input)){
+            return parseInt(input)
+    }
+    console.log(input)
+
+    
+    // for(let i=0 ; clientesBanco.length>i ; i++){
+    //     if ((clientesBanco[i].nombre).incudes(input)||(clientesBanco[i].dni).includes(input)){
+    //         coincidencias+=clientesBanco[i]
+    //     }
+    // }
+   
+
+}
+
+buscarCliente()

@@ -13,7 +13,7 @@
         <h4>TP3 - Ejercitación de Objetos y DOM en JavaScript - Cuentas bancarias</h4>
         <h5>5to Informática 2021 - Colegio Pio IX. Profesores: Nicolás Facón y Martín Rivas</h5>
         <br>
-        <div>
+        <div id="principalesFunciones" style="display: block;">
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
                 <h3>Máximos y mínimos</h3>
                 <div class="form-group">                
@@ -33,10 +33,10 @@
                     <button class="form-check-control btn btn-success"onclick="listarClientesCSV()">Listar clientes CSV</button>
                     <button class="form-check-control btn btn-danger"onclick="listarMorosos()">Listar morosos</button>
                     <br>
-                    <label for="searchByContent">Buscar clientes por apellido o DNI</label>
-                    <input class="form-control" type="text">
+                    <label for="searchByContent">Buscar clientes por apellido o DNI </label>
+                    <input class="form-control" type="text" onkeyup="buscarCliente()" name="buscarCliente">
                 </div>
-                <table class="table">
+                <table class="table" id="listadoClientes">
 
                 </table>
             </div>
@@ -52,7 +52,7 @@
                     <div class="form-group">
                         <label for="selectClienteDestino">Cliente que recibe el dinero </label>
                         <select name="" id="">
-                            <option value=""></option>
+                            <option value=""></option> <!-- aca se podria poner un function para que haga .map o for loop y muestre todos los elementos de clientesBanco -->
                         </select>
                     </div>
                     <div class="form-group">
@@ -98,7 +98,25 @@
                     <button class="form-check-control btn btn-success">Pagar</button>
                 </div>
             </div>
-            <button class="form-check-control btn btn-info">Agregar un cliente nuevo</button>
+            <button class="form-check-control btn btn-info" onclick="mostrarOcultar('principalesFunciones'),mostrarOcultar('seccionIngresarDatos')">Agregar un cliente nuevo</button>
+
+        </div>
+        <div class="col-auto shadow p-3 mb-5 bg-white rounded" id="seccionIngresarDatos" style="display: none">
+            <h3>Agregar nuevo cliente</h3>
+            <form name="ingresoDatos">
+                    <label for="nombreCliente">Nombre</label>
+                    <input type="text" name="datosNuevoCliente"> </br>
+                    <label for="apellidoCliente">Apellido</label>
+                    <input type="text" name="datosNuevoCliente"></br>
+                    <label for="dniCliente">DNI</label>
+                    <input type="text" name="datosNuevoCliente"></br>
+                    <label for="pesosCliente">Saldo en cuenta en pesos ($)</label>
+                    <input type="number" name="datosNuevoCliente"></br>
+                    <label for="dolaresCliente">Saldo en cuenta en dolares (U$S)</label>
+                    <input type="number" name="datosNuevoCliente"></br>
+            </form>
+            <button class="form-check-control btn btn-info" onclick="agregarDatos()" >Agregar</button>
+            <button class="form-check-control btn btn-danger"onclick="mostrarOcultar('seccionIngresarDatos'), mostrarOcultar('principalesFunciones')">Cancelar</button>
         </div>
 
         <script src="archivoParaLosAlumnos.js"></script>
