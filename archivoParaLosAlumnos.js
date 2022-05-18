@@ -186,7 +186,7 @@ class Cliente{
         }else if(typeof identificadorCuenta == 'object'){
             identificadorCuenta.ingresarDinero(unaCantidad,'saldoEnPesos');
         }else{
-            console.log("El identificador ingreasado no existe (no es ni el dni ni el objeto)")
+            console.log("El identificador ingresado no existe (no es ni el dni ni el objeto)")
         }
     }
     
@@ -217,11 +217,56 @@ class ComprasRealizadas{
 let clientesBanco = [];
 
 const cliente1 = new Cliente(12812846, 'Raul', 'Gómez',87000,500);
-const cliente2 = new Cliente(25654321, 'Sebastián', 'Perez',15200,3900);
+const cliente2 = new Cliente(25654321, 'Sebastián', 'Perez',-15200,3900);
 const cliente3 = new Cliente(40654321, 'Julieta', 'Albornoz', 7300, 5000);
 
 clientesBanco.push(cliente1,cliente2,cliente3);
 
+function tablaInfoCuenta(idHTML, unCliente){
+    let infoCuenta = document.getElementById(idHTML).innerHTML;
+    
+    infoCuenta = `
+    <h3>Información de la cuenta</h3>
+    <h5>Cliente solicitado:</h5>
+    <ul>
+        <li>DNI: <b>${unCliente.dni}</b></li>
+        <li>Apellido: <b>${unCliente.apellido}</b></li>
+        <li>Nombre: <b>${unCliente.nombre}</b></li>
+        <li>Saldo en cuenta en pesos: <b>$ ${unCliente.saldoEnPesos}</b></li>
+        <li>Saldo en cuenta en dólares: <b>U$S ${unCliente.saldoEnDolares}</b></li>
+        <li>Saldo pendiente de pago en la tarjeta: <b>$ ${unCliente.saldoAPagarTarjeta}</b></li>
+    `
+
+    if(unCliente.consumosTajeta.length === 0){
+        infoCuenta += `
+            <li>Últimos consumos: <b>Aún no hay consumos</b></li>
+        </ul>`
+    }else{
+        infoCuenta += `
+            <li>Últimos consumos:</li>
+        </ul>
+        <table class="table">
+            <thead><bold>
+                <tr>
+                    <th>Local</th>
+                    <th>Consumo</th>
+                </tr>
+            <bold></thead>
+        <tbody id="tableBody">`
+
+        for(let i=0 ; unCliente.consumosTajeta.length>i ; i++){
+            infoCuenta += `
+            <tr>
+                <td>${unCliente.consumosTajeta[i].compra}</td>
+                <td>${unCliente.consumosTajeta[i].monto}</td>
+            </tr>`
+        }
+
+        infoCuenta += `</tbody>`
+    }
+
+    document.getElementById(idHTML).innerHTML = infoCuenta;
+}
 
 function obtenerDatos(queCuenta,mayorOMenor){
 
@@ -247,49 +292,8 @@ function obtenerDatos(queCuenta,mayorOMenor){
     
     // -----------------------------------------------------------------
 
-    let infoCuenta = document.getElementById("infoCuenta").innerHTML;
+    tablaInfoCuenta("infoCuenta",cliente)
     
-    infoCuenta = `
-    <h3>Información de la cuenta</h3>
-    <h5>Cliente solicitado:</h5>
-    <ul>
-        <li>DNI: <b>${cliente.dni}</b></li>
-        <li>Apellido: <b>${cliente.apellido}</b></li>
-        <li>Nombre: <b>${cliente.nombre}</b></li>
-        <li>Saldo en cuenta en pesos: <b>$ ${cliente.saldoEnPesos}</b></li>
-        <li>Saldo en cuenta en dólares: <b>U$S ${cliente.saldoEnDolares}</b></li>
-        <li>Saldo pendiente de pago en la tarjeta: <b>$ ${cliente.saldoAPagarTarjeta}</b></li>
-    `
-
-    if(cliente.consumosTajeta.length === 0){
-        infoCuenta += `
-            <li>Últimos consumos: <b>Aún no hay consumos</b></li>
-        </ul>`
-    }else{
-        infoCuenta += `
-            <li>Últimos consumos:</li>
-        </ul>
-        <table class="table">
-            <thead><bold>
-                <tr>
-                    <th>Local</th>
-                    <th>Consumo</th>
-                </tr>
-            <bold></thead>
-        <tbody id="tableBody">`
-
-        for(let i=0 ; cliente.consumosTajeta.length>i ; i++){
-            infoCuenta += `
-            <tr>
-                <td>${cliente.consumosTajeta[i].compra}</td>
-                <td>${cliente.consumosTajeta[i].monto}</td>
-            </tr>`
-        }
-
-        infoCuenta += `</tbody>`
-    }
-
-    document.getElementById("infoCuenta").innerHTML = infoCuenta;
 }
 
 function obtenerMayor(){
@@ -324,12 +328,13 @@ function tabla(idHTML, lista){
 
     for(let i=0 ; lista.length>i ; i++){
         unaTabla += `
-        <tr>
-        <td> <b>${lista[i].dni}</b> </td>
+        <tr >
+        <td <button class=form-group onclick= "${infoDetallada(lista[i])}"> <b>${lista[i].dni}</b> </td>
         <td> ${lista[i].apellido} </td>
         <td> ${lista[i].nombre} </td>
         `
     }
+
     document.getElementById(idHTML).innerHTML = unaTabla
 }
 
@@ -404,23 +409,54 @@ function buscarCliente(){
         tabla("listadoCoincidencias",coincidencias)
     }
     
+}
+
+function infoDetallada(cliente){
+    tablaInfoCuenta("infoCuenta",cliente)
+}
+
+function selectClienteTransfiere(){
+    desdeQuien = document.getElementById("clientesDesde").innerHTML
+    let cantidadOptions = document.getElementById("clientesDesde").length;
+    for (let i=cantidadOptions;clientesBanco.length>i;i++){
+        desdeQuien+= `<option value="${clientesBanco[i].dni}">${clientesBanco[i].dni}</option>`
+    }
     
-    // let listadoMorosos= clientesBanco.filter(i => i.saldoEnPesos<0);
+    document.getElementById("clientesDesde").onchange = function(){
+        clienteDesde = document.getElementById("clientesDesde").value;
+        console.log(clienteDesde)
+    };
+    
+    document.getElementById("clientesDesde").innerHTML = desdeQuien
+}
 
+function selectClienteATransferir(){
+    aQuien = document.getElementById("clientesHasta").innerHTML
+    let cantidadOptions = document.getElementById("clientesHasta").length;
+    for (let i=cantidadOptions;clientesBanco.length>i;i++){
+        aQuien+= `<option value="${clientesBanco[i].dni}">${clientesBanco[i].dni}</option>`
+    }
+    
+    document.getElementById("clientesHasta").onchange = function(){
+        clienteHasta = document.getElementById("clientesHasta").value;
+        console.log(clienteHasta)
+    };
+    
+    document.getElementById("clientesHasta").innerHTML = aQuien
+}
+function clienteSegunDni(unDni){
+    for(let i=0;clientesBanco.length>i;i++){
+        if(clientesBanco[i].dni == unDni){
+            return clientesBanco[i]
+        }
+    }
+}
 
+function transferir(){
+    let monto = (document.getElementsByName("monto")[0].value)
+    (clienteSegunDni(clienteDesde)).transferirDinero(clienteSegunDni(clienteHasta),monto)
 }
 
 buscarCliente()
 
-// function buscarCliente(){
-//     let ingresado = document.getElementById("inputCliente").value;
-//     document.getElementById("inputCliente").innerHTML = ingresado; 
-//     console.log(ingresado)
-//     for(let i=0;clientesBanco.length>i;i++){
-//         if (ingresado in clientesBanco[i].apellido){
-//             return console.log(clientesBanco[i].apellido)
-//         }
-//     }
-    
-// }
-// buscarCliente()
+
