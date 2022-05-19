@@ -29,12 +29,12 @@
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
                 <h3>Listados</h3>
                 <div class="form-group">
-                    <button class="form-check-control btn btn-info" onclick="listarClientes()" >Listar clientes</button>
+                    <button class="form-check-control btn btn-info" onclick="listarClientes(clientesBanco)" >Listar clientes</button>
                     <button class="form-check-control btn btn-success"onclick="listarClientesCSV()">Listar clientes CSV</button>
                     <button class="form-check-control btn btn-danger"onclick="listarMorosos()">Listar morosos</button>
                     <br>
-                    <label for="searchByContent">Buscar clientes por apellido o DNI </label>
-                    <input class="form-control" type="text" onkeyup="buscarCliente()" name="buscarCliente">
+                    <label for="searchByContent">Buscar clientes por apellido o DNI</label>
+                    <input class="form-control" type="text" id="criterioBusquedaCliente" onkeyup="buscarCliente()">
                 </div>
                 <table class="table" id="listadoClientes">
 

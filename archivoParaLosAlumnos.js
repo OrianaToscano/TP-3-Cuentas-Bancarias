@@ -313,7 +313,7 @@ function obtenerMenorDolares(){
 
 // ------------------------------------- LISTAR DATOS -----------------------------------------------
 
-function listarClientes(){
+function listarClientes(unArray){
     tablaClientes = document.getElementById("listadoClientes").innerHTML
     tablaClientes = `
     <thead>
@@ -325,15 +325,22 @@ function listarClientes(){
     </thead>
     <tbody>
     `
-
-    for(let i=0 ; clientesBanco.length>i ; i++){
+    if(unArray.length == 0){
         tablaClientes += `
         <tr>
-        <td> <b>${clientesBanco[i].dni}</b> </td>
-        <td> ${clientesBanco[i].apellido} </td>
-        <td> ${clientesBanco[i].nombre} </td>
-        `
+        <td colspan=3 style="text-align:center"> No se encontraron resultados </td>
+        </tr>`
+    }else{
+        for(let i=0 ; unArray.length>i ; i++){
+            tablaClientes += `
+            <tr>
+            <td> <b>${unArray[i].dni}</b> </td>
+            <td> ${unArray[i].apellido} </td>
+            <td> ${unArray[i].nombre} </td>
+            `
+        }
     }
+    
     document.getElementById("listadoClientes").innerHTML = tablaClientes
 }
 
@@ -348,32 +355,28 @@ function listarClientesCSV(){
 }
 
 function listarMorosos(){
-    let listadoMorosos= clientesBanco.map(i => indexOf(clientesBanco[i].saldoEnPesos<0));
-
-    tablaMorosos = document.getElementById("listadoMorosos").innerHTML
-    tablaMorosos += `
-    <thead>
-    <tr>
-        <th>DNI</th>
-        <th>Apellido</th>
-        <th>Nombre</th>
-    </tr>
-    </thead>
-    <tbody>
-    `
-
-    for(let i=0 ; listadoMorosos.length>i ; i++){
-        tablaClientes += `
-        <tr>
-        <td> <b>${listadoMorosos[i].dni}</b> </td>
-        <td> ${listadoMorosos[i].apellido} </td>
-        <td> ${listadoMorosos[i].nombre} </td>
-        `
-    }
-    document.getElementById("listadoMorosos").innerHTML = tablaMorosos
+    // let listadoMorosos= clientesBanco.map(i => indexOf(clientesBanco[i].saldoEnPesos<0));
+    let listadoMorosos= clientesBanco.filter(i => i.saldoEnPesos<0); 
+    listarClientes(listadoMorosos)
 }
 
+function buscarCliente(){
+    let input = document.getElementById('criterioBusquedaCliente').value
+
+    let coincidencias = clientesBanco.filter(i => String(i.dni).includes(input) || i.apellido.includes(input));
+
+    (input =="") ? listarClientes(clientesBanco) : listarClientes(coincidencias);
+    
+}
+
+
+
+
 // --------------------------------------------------------------------------------------------------
+
+
+
+
 
 
 // ------------------------------------- FUNCIONES OPCIONALES --------------------------------------------
@@ -410,23 +413,3 @@ function agregarDatos(){
 // ------------------------------------------------------------------------------------------------------
 
 // pagina que puede servir opa https://www.javascripttutorial.net/javascript-dom/javascript-select-box/ 
-
-function buscarCliente(){
-    let input = (document.getElementsByName("buscarCliente")[0].value)
-    
-    if([1,2,3,4,5,6,7,8,9,0].includes(input)){
-            return parseInt(input)
-    }
-    console.log(input)
-
-    
-    // for(let i=0 ; clientesBanco.length>i ; i++){
-    //     if ((clientesBanco[i].nombre).incudes(input)||(clientesBanco[i].dni).includes(input)){
-    //         coincidencias+=clientesBanco[i]
-    //     }
-    // }
-   
-
-}
-
-buscarCliente()
