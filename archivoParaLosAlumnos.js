@@ -228,14 +228,20 @@ class ComprasRealizadas{
 function recuperarDatos(){
     if(localStorage.getItem("listaClientes") === null){
         let clientesBanco = [];
-        return [clientesBanco]
+        const cliente1 = new Cliente(12812846, 'Raul', 'Gómez',87000,500);
+        const cliente2 = new Cliente(25654321, 'Sebastián', 'Perez',-15200,3900);
+        const cliente3 = new Cliente(40654321, 'Julieta', 'Albornoz', 7300, 5000);
+        clientesBanco.push(cliente1,cliente2,cliente3);
+
+        return clientesBanco
     }else{
-        let clientesBanco = JSON.parse(localStorage.getItem("listaClientes"));
-        return [clientesBanco]
+        let clientesBanco =  JSON.parse(localStorage.getItem("listaClientes"));
+        clientesBanco = clientesBanco.map(i => Object.assign(new Cliente(), i))
+        return clientesBanco
     }
 }
 
-let clientesBanco = recuperarDatos()[0]
+let clientesBanco = recuperarDatos()
 
 
 
@@ -496,8 +502,10 @@ function agregarDatos(){
     
     if(listaInputs.includes("")){
         return alert("Todos los campos deben estar completados")
-    } if(listaInputs.some((dato,index) => dato<0 && index==4)){                                 // metodo .SOME chequea si algun valor del array cumple con la condicion
-        return alert("El monto en dolares debe ser positivo")
+    } if(listaInputs.some((dato,index) => (dato<0 && index==4) || (dato<0 && index==3))){       // metodo .SOME chequea si algun valor del array cumple con la condicion
+        return alert("El monto de las cuentas debe ser positivo")
+    } if(clientesBanco.map(i => i.dni).includes(listaInputs[2])){
+        return alert("Ya existe una cuenta creada con ese dni")
     }
 
     let nuevoCliente = new Cliente(listaInputs[2], listaInputs[0], listaInputs[1], listaInputs[3], listaInputs[4])
@@ -509,7 +517,7 @@ function agregarDatos(){
 }
 
 function guardarEnStorage(){
-    localStorage.setItem("listaClientes",( JSON.stringify(clientesBanco)));;
+    localStorage.listaClientes = JSON.stringify(clientesBanco);
 }
 
 
