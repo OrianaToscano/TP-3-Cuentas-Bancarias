@@ -224,7 +224,6 @@ class ComprasRealizadas{
 }
 
 
-
 function recuperarDatos(){
     if(localStorage.getItem("listaClientes") === null){
         let clientesBanco = [];
@@ -400,7 +399,7 @@ function listarMorosos(){
 
 // -------------------------------- BUSCAR --------------------------------
 function buscarCliente(){
-    let input = imputPorId('criterioBusquedaCliente')
+    let input = obtenerValorSelect('criterioBusquedaCliente')
 
     let coincidencias = clientesBanco.filter(i => String(i.dni).includes(input) || i.apellido.includes(input));
 
@@ -424,57 +423,67 @@ function actualizarSelects(){
     }
 
     Array.from(opciones).forEach(menuSelect => document.getElementById(menuSelect.id).innerHTML += desdeQuien);
-} // se llama al principio de todo y dsp de agregar un cliente nuevo 
+}
 
-window.onload = actualizarSelects() // esto seria que cuando carga la pagina ya ejecuta actualizarSelects para que se inicie con los valores 
+window.onload = actualizarSelects() 
 
-function obtenerValorSelect(id){
-    valor = document.getElementById(id).value
-    return Number(valor)
-}; // esto la verdad es bastante boludo hacer una funcion por una linea pero lo dejo porque FUNCIONA NO ENTIENDO COMO dahjsfgd usalo como base si queres ¿
 
 // -------------------------------------------------------------------------------------------------
 
-function imputPorId(id){
-    return document.getElementById(id).value
+function obtenerValorSelect(id){
+    if(document.getElementById(id).tagName === 'SELECT'){
+        let valor = document.getElementById(id).value
+        if(valor === 'default'){
+            return(alert('No se ha ingresado el cliente'))
+        }
+        let cliente = clientesBanco.filter(i => Number(valor) == i.dni)[0]
+        return cliente
+    }else if(id != 'nombreLocal'){
+        let valor = parseFloat(document.getElementById(id).value)
+        return valor
+    }else{
+        return document.getElementById(id).value
+    }
+};
+
+function checkeoDeDatos(valor,cliente1,cliente2){
+    
 }
 
-// function accionConDniSelect(id,queHace){                         No me sale pero si la pensamos puede ser buena
-//     for(let i=0;clientesBanco.length>i;i++){
-//         if(obtenerValorSelect(id)==clientesBanco[i].dni){
-//             cliente=clientesBanco[i].queHace
-//         }
-//     }
-// }
 
 // -------------------------------------- FUNCIONES EN PANTALLA --------------------------------------------------
 function realizarTransferencia(){
-    let monto = Number(imputPorId("montoTransferencia"))
-    for(let i=0;clientesBanco.length>i;i++){
-        if(obtenerValorSelect('clientesDesde')==clientesBanco[i].dni){
-            clientesBanco[i].transferirDinero(obtenerValorSelect('clientesHasta'),monto)
-        }
+    let monto = obtenerValorSelect("montoTransferencia")
+    console.log(monto)
+    if(monto <= 0){
+        return(alert('El saldo ingresado no puede ser negativo'))
     }
+    let clienteDesde = obtenerValorSelect('clientesDesde')
+    let clientesHasta = obtenerValorSelect('clientesHasta')
+
+    clienteDesde.transferirDinero(clientesHasta,monto)
 }
+// accionConDniSelect("clientesDesde",transferirDinero(obtenerValorSelect('clientesHasta'))
 
 function nuevoConsumoTarjeta(){
-    let local = imputPorId("nombreLocal")
-    let monto = Number(imputPorId("nuevoConsumo"))
-
-    for(let i=0;clientesBanco.length>i;i++){
-        if(obtenerValorSelect("clienteConsumidor")==clientesBanco[i].dni){
-            clientesBanco[i].pagarConTarjeta(local,monto)
-        }
+    let local = obtenerValorSelect("nombreLocal")
+    let monto = obtenerValorSelect("nuevoConsumo")
+    if(monto <= 0){
+        return(alert('El saldo ingresado no puede ser negativo'))
     }
+    let clientesConsumidor = obtenerValorSelect('clienteConsumidor')
+
+    clientesConsumidor.pagarConTarjeta(local,monto)
 }
 
 function pagarTarjetaPorPantalla(){
-    let monto = Number(imputPorId('montoAPagar'))
-    for(let i=0;clientesBanco.length>i;i++){
-        if(obtenerValorSelect("clientesAPagar")==clientesBanco[i].dni){
-            clientesBanco[i].pagarTarjeta(monto)
-        }
+    let monto = obtenerValorSelect('montoAPagar')
+    if(monto <= 0){
+        return(alert('El saldo ingresado no puede ser negativo'))
     }
+    let clienteAPagar = obtenerValorSelect('clientesAPagar')
+
+    clienteAPagar.pagarTarjeta(monto) 
 
 }  // el nombre es medio raro pero es xq tenemos otros DOS pagar tarjeta que es tipo por consola
 
