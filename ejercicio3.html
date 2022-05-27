@@ -29,7 +29,7 @@
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
                 <h3>Listados</h3>
                 <div class="form-group">
-                    <button class="form-check-control btn btn-info" onclick="listarClientes()" >Listar clientes</button>
+                    <button class="form-check-control btn btn-info" onclick="listarClientes(clientesBanco)" >Listar clientes</button>
                     <button class="form-check-control btn btn-success"onclick="listarClientesCSV()">Listar clientes CSV</button>
                     <button class="form-check-control btn btn-danger"onclick="listarMorosos()">Listar morosos</button>
                     <br>
@@ -63,7 +63,7 @@
                         <label for="montoTransferencia">Monto a transferir ($) </label>
                         <input class="form-control" type="number" id="montoTransferencia">
                     </div>
-                    <button class="form-check-control btn btn-success" onchange="transferir()">Transferir</button>
+                    <button class="form-check-control btn btn-success" onclick="realizarTransferenciaPorPantalla()">Transferir</button>
                 </div>
             </div>
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
@@ -71,8 +71,8 @@
                 <div class="form-group">
                     <div class="form-group">
                         <label for="selectClienteNuevoConsumo">Cliente que realizó el consumo </label>
-                        <select name="" id="clienteConsumidor" onchange="obtenerValorSelect('clienteConsumidor')">
-                            <option value="default" selected selected> Ninguna cuenta seleccionda </option> 
+                        <select name="" id="clienteConsumidor">
+                            <option value="default" selected> Ninguna cuenta seleccionda </option> 
                         </select>
                     </div>
                     <div class="form-group">
@@ -83,7 +83,7 @@
                         <label for="nuevoConsumo">Consumo realizado ($) </label>
                         <input type="number" id="nuevoConsumo">
                     </div>
-                    <button class="form-check-control btn btn-success" onclick="">Añadir consumo</button>
+                    <button class="form-check-control btn btn-success" onclick="nuevoConsumoTarjetaPorPantalla()">Añadir consumo</button>
                 </div>
             </div>
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
@@ -92,14 +92,14 @@
                     <div class="form-group">
                         <label for="selectClientePagoTarjeta">Cliente que va a pagar la tarjeta </label>
                         <select name="" id="clientesAPagar" onchange="obtenerValorSelect('clientesAPagar')">
-                            <option value="default" selected value="default" selected> Ninguna cuenta seleccionda </option> 
+                            <option value="default" value="default" selected> Ninguna cuenta seleccionda </option> 
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="montoPagarTarjeta">Monto a pagar ($) </label>
-                        <input type="number">
+                        <input type="number" id="montoAPagar">
                     </div>
-                    <button class="form-check-control btn btn-success">Pagar</button>
+                    <button class="form-check-control btn btn-success" onclick="pagarTarjetaPorPantalla()">Pagar</button>
                 </div>
             </div>
             <button class="form-check-control btn btn-info" onclick="mostrarOcultar('principalesFunciones'),mostrarOcultar('seccionIngresarDatos')">Agregar un cliente nuevo</button>
@@ -119,9 +119,13 @@
                     <label for="dolaresCliente">Saldo en cuenta en dolares (U$S)</label>
                     <input type="number" name="datosNuevoCliente"></br>
             </form>
-            <button class="form-check-control btn btn-info" onclick="agregarDatos()" >Agregar</button>
-            <button class="form-check-control btn btn-danger"onclick="mostrarOcultar('seccionIngresarDatos'), mostrarOcultar('principalesFunciones')">Cancelar</button>
+            <button class="form-check-control btn btn-success" onclick="agregarDatos()" >Agregar</button>
+            <button class="form-check-control btn btn-danger" onclick="document.ingresoDatos.reset()">Cancelar</button>
+            <button class="form-check-control btn btn-info" onclick="mostrarOcultar('seccionIngresarDatos'), mostrarOcultar('principalesFunciones')">Salir</button>
         </div>
+
+        <footer class="pt-3 mt-4 text-muted border-top">
+        </footer>
 
         <script src="archivoParaLosAlumnos.js"></script>
     </body>
