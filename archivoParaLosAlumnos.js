@@ -215,14 +215,12 @@ class Cliente{
     }
 }
 
-
 class ComprasRealizadas{
     constructor(compra, monto){
         this.compra = compra
         this.monto = monto
     }
 }
-
 
 function recuperarDatos(){
     if(localStorage.getItem("listaClientes") === null){
@@ -241,7 +239,6 @@ function recuperarDatos(){
 }
 
 let clientesBanco = recuperarDatos()
-
 
 
 // ------------------------------------- OBTENER DATOS -----------------------------------------------
@@ -320,7 +317,6 @@ function obtenerDatos(queCuenta,mayorOMenor){
     
 }
 
-
 function obtenerMayor(){
     obtenerDatos('saldoEnPesos','mayor');
 }
@@ -344,7 +340,7 @@ function infoDetallada(dni){
 
 // ---------------------------------------------------------------------------------------------------
 
-// -------------------------------- LISTADOS --------------------------------
+// ------------------------------------------- LISTADOS ----------------------------------------------
 function tabla(lista){
     unaTabla = document.getElementById('listadoClientes').innerHTML
     unaTabla = 
@@ -394,7 +390,7 @@ function listarMorosos(){
     let listadoMorosos= clientesBanco.filter(i => i.saldoEnPesos<0);
     tabla(listadoMorosos)
 }
-// -----------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------
 
 
 // -------------------------------- BUSCAR --------------------------------
@@ -423,47 +419,53 @@ function actualizarSelects(){
     }
 
     Array.from(opciones).forEach(menuSelect => document.getElementById(menuSelect.id).innerHTML += desdeQuien);
-}
-
-window.onload = actualizarSelects() 
-
-
-// -------------------------------------------------------------------------------------------------
+};
 
 function obtenerValorSelect(id){
     if(document.getElementById(id).tagName === 'SELECT'){
         let valor = document.getElementById(id).value
-        if(valor === 'default'){
-            return(alert('No se ha ingresado el cliente'))
-        }
         let cliente = clientesBanco.filter(i => Number(valor) == i.dni)[0]
-        return cliente
+        return cliente === undefined ? 'undefined' : cliente
     }else if(id != 'nombreLocal'){
-        let valor = parseFloat(document.getElementById(id).value)
-        return valor
+        return parseFloat(document.getElementById(id).value)
     }else{
         return document.getElementById(id).value
     }
 };
 
-function checkeoDeDatos(valor,cliente1,cliente2){
-    
+window.onload = actualizarSelects() 
+
+function detectorDeErrores(monto,cliente1,cliente2 = 'none',local = 'none'){
+    console.log(monto,cliente1,cliente2,local)
+    if(monto <= 0 || monto !== monto){
+        return('El saldo ingresado no es valido')
+    }
+    if(cliente1 === 'undefined' || cliente2 === 'undefined' || cliente1 === cliente2){
+        return('El usuario ingresado no es válido')
+    }
+    if(local === ''){
+        return('Local no válido')
+    }
+
 }
+
+// -------------------------------------------------------------------------------------------------
+
 
 
 // -------------------------------------- FUNCIONES EN PANTALLA --------------------------------------------------
 function realizarTransferencia(){
     let monto = obtenerValorSelect("montoTransferencia")
-    console.log(monto)
-    if(monto <= 0){
-        return(alert('El saldo ingresado no puede ser negativo'))
-    }
     let clienteDesde = obtenerValorSelect('clientesDesde')
     let clientesHasta = obtenerValorSelect('clientesHasta')
-
-    clienteDesde.transferirDinero(clientesHasta,monto)
+    
+    if(detectorDeErrores(monto,clienteDesde,clientesHasta)){
+        return(alert(detectorDeErrores(monto,clienteDesde,clientesHasta)))
+    }else{
+        clienteDesde.transferirDinero(clientesHasta,monto)
+    }
+    
 }
-// accionConDniSelect("clientesDesde",transferirDinero(obtenerValorSelect('clientesHasta'))
 
 function nuevoConsumoTarjeta(){
     let local = obtenerValorSelect("nombreLocal")
@@ -485,7 +487,7 @@ function pagarTarjetaPorPantalla(){
 
     clienteAPagar.pagarTarjeta(monto) 
 
-}  // el nombre es medio raro pero es xq tenemos otros DOS pagar tarjeta que es tipo por consola
+}
 
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -531,5 +533,3 @@ function guardarEnStorage(){
 
 
 // ------------------------------------------------------------------------------------------------------
-
-// pagina que puede servir opa https://www.javascripttutorial.net/javascript-dom/javascript-select-box/ 
