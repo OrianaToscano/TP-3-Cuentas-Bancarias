@@ -167,6 +167,7 @@ class Cliente{
         if(this[queCuenta] == this.saldoEnDolares && this.saldoEnDolares < unaCantidad){
             return false;
         }else{
+            this[queCuenta] -= unaCantidad
             return true;
         }
     }
@@ -177,7 +178,6 @@ class Cliente{
 
     transferirDinero(identificadorCuenta, unaCantidad){
         this.extraerDinero(unaCantidad, 'saldoEnPesos')
-        this.saldoEnPesos -= unaCantidad
 
         if(typeof identificadorCuenta == 'number'){
             for(let i=0 ; i<clientesBanco.length ; i++){
@@ -224,11 +224,13 @@ clientesBanco.push(cliente1,cliente2,cliente3);
 
 function tablaInfoCuenta(idHTML, unCliente){
     let infoCuenta = document.getElementById(idHTML).innerHTML;
+
     
     infoCuenta = `
     <h3>Información de la cuenta</h3>
     <h5>Cliente solicitado:</h5>
     <ul>
+
         <li>DNI: <b>${unCliente.dni}</b></li>
         <li>Apellido: <b>${unCliente.apellido}</b></li>
         <li>Nombre: <b>${unCliente.nombre}</b></li>
@@ -238,6 +240,7 @@ function tablaInfoCuenta(idHTML, unCliente){
     `
 
     if(unCliente.consumosTajeta.length === 0){
+
         infoCuenta += `
             <li>Últimos consumos: <b>Aún no hay consumos</b></li>
         </ul>`
@@ -254,16 +257,19 @@ function tablaInfoCuenta(idHTML, unCliente){
             <bold></thead>
         <tbody id="tableBody">`
 
+
         for(let i=0 ; unCliente.consumosTajeta.length>i ; i++){
             infoCuenta += `
             <tr>
                 <td>${unCliente.consumosTajeta[i].compra}</td>
                 <td>${unCliente.consumosTajeta[i].monto}</td>
+
             </tr>`
         }
 
         infoCuenta += `</tbody>`
     }
+
 
     document.getElementById(idHTML).innerHTML = infoCuenta;
 }
@@ -294,6 +300,7 @@ function obtenerDatos(queCuenta,mayorOMenor){
 
     tablaInfoCuenta("infoCuenta",cliente)
     
+
 }
 
 function obtenerMayor(){
@@ -312,10 +319,12 @@ function obtenerMenorDolares(){
     obtenerDatos('saldoEnDolares','menor');
 }
 
+
 function tabla(idHTML, lista){
     unaTabla = document.getElementById(idHTML).innerHTML
     unaTabla = 
     `
+
     <thead>
     <tr>
         <th>DNI</th>
@@ -343,6 +352,19 @@ function listarClientes(){
 }
 
 
+
+
+function listarClientesCSV(){
+    console.log(clientesBanco)
+    let listadoCSV="";
+    for(let i=0;clientesBanco.length>i;i++){
+        listadoCSV += `${clientesBanco[i].apellido}, ${clientesBanco[i].nombre} `;
+        (i != clientesBanco.length-1)&&(listadoCSV=`;`);
+    };
+    console.log(listadoCSV);
+}
+
+
 function listarClientesCSV(){
     console.log(clientesBanco)
     let listadoCSV="";
@@ -354,6 +376,7 @@ function listarClientesCSV(){
 }
 
 function listarMorosos(){
+
     let listadoMorosos= clientesBanco.filter(i => i.saldoEnPesos<0);
     tabla("listadoMorosos",listadoMorosos)
 }
@@ -458,5 +481,3 @@ function transferir(){
 }
 
 buscarCliente()
-
-

@@ -33,8 +33,10 @@
                     <button class="form-check-control btn btn-success"onclick="listarClientesCSV()">Listar clientes CSV</button>
                     <button class="form-check-control btn btn-danger"onclick="listarMorosos()">Listar morosos</button>
                     <br>
+
                     <label for="searchByContent">Buscar clientes por apellido o DNI </label>
                     <input class="form-control" type="text" onkeyup="buscarCliente()" name="buscarCliente">
+
 
                 </div>
                 <table class="table" id="listadoCoincidencias">
@@ -57,7 +59,9 @@
                     </div>
                     <div class="form-group">
                         <label for="selectClienteDestino">Cliente que recibe el dinero </label>
+
                         <select name="" id="clientesHasta" onclick="selectClienteATransferir()">
+
                         </select>
                     </div>
                     <div class="form-group">
