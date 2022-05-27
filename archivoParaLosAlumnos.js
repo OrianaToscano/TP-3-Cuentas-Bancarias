@@ -247,6 +247,18 @@ function listarClientes(){
 }
 
 
+
+function listarClientesCSV(){
+    console.log(clientesBanco)
+    let listadoCSV="";
+    for(let i=0;clientesBanco.length>i;i++){
+        listadoCSV += `${clientesBanco[i].apellido}, ${clientesBanco[i].nombre} `;
+        (i != clientesBanco.length-1)&&(listadoCSV=`;`);
+    };
+    console.log(listadoCSV);
+}
+
+
 function listarClientesCSV(){
     console.log(clientesBanco)
     let listadoCSV="";
