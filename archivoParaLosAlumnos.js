@@ -222,7 +222,9 @@ const cliente3 = new Cliente(40654321, 'Julieta', 'Albornoz', 7300, 5000);
 
 clientesBanco.push(cliente1,cliente2,cliente3);
 
+
 // ------------------------------------- OBTENER DATOS -----------------------------------------------
+
 
 function obtenerDatos(queCuenta,mayorOMenor){
 
@@ -309,6 +311,7 @@ function obtenerMenorDolares(){
     obtenerDatos('saldoEnDolares','menor');
 }
 
+
 // ---------------------------------------------------------------------------------------------------
 
 // ------------------------------------- LISTAR DATOS -----------------------------------------------
@@ -336,6 +339,20 @@ function listarClientes(){
     }
     document.getElementById("listadoClientes").innerHTML = tablaClientes
 }
+
+
+
+
+function listarClientesCSV(){
+    console.log(clientesBanco)
+    let listadoCSV="";
+    for(let i=0;clientesBanco.length>i;i++){
+        listadoCSV += `${clientesBanco[i].apellido}, ${clientesBanco[i].nombre} `;
+        (i != clientesBanco.length-1)&&(listadoCSV=`;`);
+    };
+    console.log(listadoCSV);
+}
+
 
 function listarClientesCSV(){
     console.log(clientesBanco)
