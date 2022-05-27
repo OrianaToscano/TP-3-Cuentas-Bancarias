@@ -47,22 +47,23 @@
                 <div class="form-group">
                     <div class="form-group">
                         <label for="selectClienteOrigen">Cliente que transfiere el dinero 
-                            <select name="" id="clientesDesde" onclick="selectClienteTransfiere()">
-                                <option> Ninguna cuenta seleccionda </option> 
+                            <select name="" id="clientesDesde" onchange="obtenerValorSelect('clientesDesde')">
+                                <option value="default" selected> Ninguna cuenta seleccionda </option> 
                             </select>
                         </label>
                         <div class="resultado"></div>
                     </div>
                     <div class="form-group">
                         <label for="selectClienteDestino">Cliente que recibe el dinero </label>
-                        <select name="" id="clientesHasta" onclick="selectClienteATransferir()">
+                        <select name="" id="clientesHasta" onchange="obtenerValorSelect('clientesHasta')">
+                            <option value="default" selected> Ninguna cuenta seleccionda </option> 
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="montoTransferencia">Monto a transferir ($) </label>
-                        <input class="form-control" type="text" onkeyup="transferir()" name="monto">
+                        <input class="form-control" type="number" id="montoTransferencia">
                     </div>
-                    <button class="form-check-control btn btn-success" onclick="transferir()">Transferir</button>
+                    <button class="form-check-control btn btn-success" onchange="transferir()">Transferir</button>
                 </div>
             </div>
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
@@ -70,19 +71,19 @@
                 <div class="form-group">
                     <div class="form-group">
                         <label for="selectClienteNuevoConsumo">Cliente que realizó el consumo </label>
-                        <select name="">
-                            <option value=""></option>
+                        <select name="" id="clienteConsumidor" onchange="obtenerValorSelect('clienteConsumidor')">
+                            <option value="default" selected selected> Ninguna cuenta seleccionda </option> 
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="nuevoLocal">Nombre del local </label>
-                        <input type="text">
+                        <input type="text" id="nombreLocal">
                     </div>
                     <div class="form-group">
                         <label for="nuevoConsumo">Consumo realizado ($) </label>
-                        <input type="text">
+                        <input type="number" id="nuevoConsumo">
                     </div>
-                    <button class="form-check-control btn btn-success">Añadir consumo</button>
+                    <button class="form-check-control btn btn-success" onclick="">Añadir consumo</button>
                 </div>
             </div>
             <div class="col-auto shadow p-3 mb-5 bg-white rounded">
@@ -90,13 +91,13 @@
                 <div class="form-group">
                     <div class="form-group">
                         <label for="selectClientePagoTarjeta">Cliente que va a pagar la tarjeta </label>
-                        <select name="" id="">
-                            <option value=""></option>
+                        <select name="" id="clientesAPagar" onchange="obtenerValorSelect('clientesAPagar')">
+                            <option value="default" selected value="default" selected> Ninguna cuenta seleccionda </option> 
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="montoPagarTarjeta">Monto a pagar ($) </label>
-                        <input type="text">
+                        <input type="number">
                     </div>
                     <button class="form-check-control btn btn-success">Pagar</button>
                 </div>
@@ -112,7 +113,7 @@
                     <label for="apellidoCliente">Apellido</label>
                     <input type="text" name="datosNuevoCliente"></br>
                     <label for="dniCliente">DNI</label>
-                    <input type="text" name="datosNuevoCliente"></br>
+                    <input type="number" name="datosNuevoCliente"></br>
                     <label for="pesosCliente">Saldo en cuenta en pesos ($)</label>
                     <input type="number" name="datosNuevoCliente"></br>
                     <label for="dolaresCliente">Saldo en cuenta en dolares (U$S)</label>

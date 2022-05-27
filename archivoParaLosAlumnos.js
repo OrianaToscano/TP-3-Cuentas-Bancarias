@@ -95,11 +95,11 @@
     10) Implementar una función para el botón "Listar clientes CSV" que muestre todos los clientes del banco por 
         consola. Se deberá mostrar en el formato "Apellido1, Nombre1; Apellido2, Nombre2; Apellido3, Nombre3; etc.".
         NOTA: CSV es un formato estándar de manejo de información. Viene de "valores separados por comas" y se utiliza
-        muchísimo en programas como Excel. --YA ESTA--
+        muchísimo en programas como Excel.
 
     11) Implementar una función para el botón "Listar morosos" que muestre todos los clientes del banco que tengan
         su cuenta en pesos con saldo negativo en una tabla. Indicar en la misma los datos que usted quiera, mínimamente 
-        apellido y DNI. --YA ESTA--
+        apellido y DNI.
 
     12) A partir del texto ingresado en un cuadro de texto, implementar una función que me permita buscar un cliente
         por su nombre o su DNI. Todas las coincidencias que encuentre las deberá mostrar en una tabla.
@@ -167,6 +167,7 @@ class Cliente{
         if(this[queCuenta] == this.saldoEnDolares && this.saldoEnDolares < unaCantidad){
             return false;
         }else{
+            this[queCuenta] -= unaCantidad
             return true;
         }
     }
@@ -177,7 +178,6 @@ class Cliente{
 
     transferirDinero(identificadorCuenta, unaCantidad){
         this.extraerDinero(unaCantidad, 'saldoEnPesos')
-        this.saldoEnPesos -= unaCantidad
 
         if(typeof identificadorCuenta == 'number'){
             for(let i=0 ; i<clientesBanco.length ; i++){
@@ -186,13 +186,13 @@ class Cliente{
         }else if(typeof identificadorCuenta == 'object'){
             identificadorCuenta.ingresarDinero(unaCantidad,'saldoEnPesos');
         }else{
-            console.log("El identificador ingresado no existe (no es ni el dni ni el objeto)")
+            console.log("El identificador ingreasado no existe (no es ni el dni ni el objeto)")
         }
     }
     
     pagarConTarjeta(compra, monto){
         let unaCompra = new ComprasRealizadas(compra, monto);
-        this.consumosTajeta.push(unaCompra);
+        this.consumosTarjeta.push(unaCompra);
         this.saldoAPagarTarjeta += monto;
     }
 
@@ -217,13 +217,16 @@ class ComprasRealizadas{
 let clientesBanco = [];
 
 const cliente1 = new Cliente(12812846, 'Raul', 'Gómez',87000,500);
-const cliente2 = new Cliente(25654321, 'Sebastián', 'Perez',15200,3900);
+const cliente2 = new Cliente(25654321, 'Sebastián', 'Perez',-15200,3900);
 const cliente3 = new Cliente(40654321, 'Julieta', 'Albornoz', 7300, 5000);
 
 clientesBanco.push(cliente1,cliente2,cliente3);
 
+// ------------------------------------- OBTENER DATOS -----------------------------------------------
+
 function tablaInfoCuenta(unCliente){
     let infoCuenta = document.getElementById("infoCuenta").innerHTML;
+
     
     infoCuenta = `
     <h3>Información de la cuenta</h3>
@@ -237,7 +240,7 @@ function tablaInfoCuenta(unCliente){
         <li>Saldo pendiente de pago en la tarjeta: <b>$ ${unCliente.saldoAPagarTarjeta}</b></li>
     `
 
-    if(unCliente.consumosTarjeta.length === 0){
+    if((unCliente.consumosTarjeta).length === 0){
         infoCuenta += `
             <li>Últimos consumos: <b>Aún no hay consumos</b></li>
         </ul>`
@@ -254,11 +257,11 @@ function tablaInfoCuenta(unCliente){
             <bold></thead>
         <tbody id="tableBody">`
 
-        for(let i=0 ; unCliente.consumosTajeta.length>i ; i++){
+        for(let i=0 ; unCliente.consumosTarjeta.length>i ; i++){
             infoCuenta += `
             <tr>
-                <td>${unCliente.consumosTajeta[i].compra}</td>
-                <td>${unCliente.consumosTajeta[i].monto}</td>
+                <td>${unCliente.consumosTarjeta[i].compra}</td>
+                <td>${unCliente.consumosTarjeta[i].monto}</td>
             </tr>`
         }
 
@@ -295,7 +298,7 @@ function obtenerDatos(queCuenta,mayorOMenor){
     
 }
 
-// -------------------------------- PRIMERA BOTONERA --------------------------------
+
 function obtenerMayor(){
     obtenerDatos('saldoEnPesos','mayor');
 }
@@ -312,11 +315,13 @@ function obtenerMenorDolares(){
     obtenerDatos('saldoEnDolares','menor');
 }
 
-function infoDetallada(cliente){
+function infoDetallada(dni){
+    let cliente = clientesBanco.filter(i => dni == i.dni)[0]  // toma el dni y busca la unica coincidencia posible
+    console.log(cliente)
     tablaInfoCuenta(cliente)
 }
-// -----------------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------------------------------
 
 // -------------------------------- LISTADOS --------------------------------
 function tabla(lista){
@@ -340,14 +345,14 @@ function tabla(lista){
         </tr>`
     }else{
     for(let i=0 ; lista.length>i ; i++){
-        let cliente = lista[i]
         unaTabla += `
-        <tr onclick= "infoDetallada(${cliente})">
+        <tr onclick= "infoDetallada(${lista[i].dni})">    
         <td > <b>${lista[i].dni}</b> </td>
         <td> ${lista[i].apellido} </td>
-        <td> ${lista[i].nombre} </td></tr>`
+        <td> ${lista[i].nombre} </td></tr>`   
+        
     }}
-
+    console.log(unaTabla)
     document.getElementById('listadoClientes').innerHTML = unaTabla
 }
 
@@ -378,78 +383,45 @@ function buscarCliente(){
 
     let coincidencias = clientesBanco.filter(i => String(i.dni).includes(input) || i.apellido.includes(input));
 
-    (input =="") ? tabla(clientesBanco) : tabla(coincidencias)
+    (input =="") ? listarClientes(clientesBanco) : listarClientes(coincidencias);
+    
 }
 // --------------------------------------------------------------------------
 
 
-function selects(){
-    let opciones = clientesBanco.filter(i => )
-}
 
+// -------------------------------------- SELECTS --------------------------------------------------
 
+function actualizarSelects(){ 
+    let opciones = document.getElementsByTagName('select')
+    let desdeQuien = "";
 
-function selectClienteTransfiere(){
-    desdeQuien = document.getElementById("clientesDesde").innerHTML
-    let cantidadOptions = document.getElementById("clientesDesde").length;
-    if(cantidadOptions = clientesBanco.length+1){
-
-    }
-
-    for (let i=0 ; clientesBanco.length>i ; i++){
-        desdeQuien+= `<option value="${clientesBanco[i].dni}">${clientesBanco[i].dni}</option>`
-    }
-    
-    document.getElementById("clientesDesde").onchange = function(){
-        clienteDesde = document.getElementById("clientesDesde").value;
-        console.log(clienteDesde)
-    };
-    
-    document.getElementById("clientesDesde").innerHTML = desdeQuien
-}
-
-function selectClienteATransferir(){
-    aQuien = document.getElementById("clientesHasta").innerHTML
-    let cantidadOptions = document.getElementById("clientesHasta").length;
-    for (let i=cantidadOptions;clientesBanco.length>i;i++){
-        aQuien+= `<option value="${clientesBanco[i].dni}">${clientesBanco[i].dni}</option>`
-    }
-    
-    document.getElementById("clientesHasta").onchange = function(){
-        clienteHasta = document.getElementById("clientesHasta").value;
-        console.log(clienteHasta)
-    };
-    
-    document.getElementById("clientesHasta").innerHTML = aQuien
-}
-function clienteSegunDni(unDni){
-    for(let i=0;clientesBanco.length>i;i++){
-        if(clientesBanco[i].dni == unDni){
-            return clientesBanco[i]
+    if(opciones[0].length < clientesBanco.length + 1){
+        for(let i=opciones[0].length-1; clientesBanco.length  > i ; i++){
+            desdeQuien+= `<option value="${clientesBanco[i].dni}">${clientesBanco[i].dni}</option>`
         }
     }
-}
 
-function transferir(){
-    let monto = (document.getElementsByName("monto")[0].value)
-    (clienteSegunDni(clienteDesde)).transferirDinero(clienteSegunDni(clienteHasta),monto)
-}
+    Array.from(opciones).forEach(menuSelect => document.getElementById(menuSelect.id).innerHTML += desdeQuien);
+} // se llama al principio de todo y dsp de agregar un cliente nuevo 
 
+window.onload = actualizarSelects() // esto seria que cuando carga la pagina ya ejecuta actualizarSelects para que se inicie con los valores 
 
+function obtenerValorSelect(id){
+    valor = document.getElementById(id).value
+}; // esto la verdad es bastante boludo hacer una funcion por una linea pero lo dejo porque FUNCIONA NO ENTIENDO COMO dahjsfgd usalo como base si queres ¿
 
-
-
-
-
+// -------------------------------------------------------------------------------------------------
 
 
+// -------------------------------------- FUNCIONES EN PANTALLA --------------------------------------------------
+function realizarTransferencia(){}
 
+function nuevoConsumoTarjeta(){}
 
+function pagarTarjetaPorPantalla(){}  // el nombre es medio raro pero es xq tenemos otros DOS pagar tarjeta que es tipo por consola
 
-
-
-
-
+// ---------------------------------------------------------------------------------------------------------------
 
 
 // ------------------------------------- FUNCIONES OPCIONALES --------------------------------------------
@@ -465,8 +437,8 @@ function agregarDatos(){
 
     // listaInputs: [0] = nombre, [1] = apellido, [2] = dni, [3] = pesos, [4] = dolares
     let listaInputs = Array.from(inputs).map((dato,index) => {                                  // inputs es un formato que no se puede leer como lista, entonces hace 
-        if([3,4].includes(index)){                                                              // Array.from = crea un array desde inputs. A su vez, se "filtran" los 
-            return parseFloat(dato.value)                                                       // valores con un .map, que tiene 2 condiciones (si el indice es 3 o 4,
+        if([2,3,4].includes(index)){                                                            // Array.from = crea un array desde inputs. A su vez, se "filtran" los 
+            return index== 3 || index == 4 ? parseFloat(dato.value) : parseInt(dato.value)      // valores con un .map, que tiene 2 condiciones (si el indice es 3 o 4,
         }else{                                                                                  // o sea, peso o dolar), ingresa el valor a listaInputs como Float, sino,
             return dato.value}                                                                  // pasa como string. Nos evitamos hacer un for para filtrar dsp. 
     }   )
@@ -479,15 +451,11 @@ function agregarDatos(){
 
     let nuevoCliente = new Cliente(listaInputs[2], listaInputs[0], listaInputs[1], listaInputs[3], listaInputs[4])
     clientesBanco.push(nuevoCliente)
+    actualizarSelects()
     
     return alert("Cliente ingresado con éxito")
 }
 
 // ------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
+// pagina que puede servir opa https://www.javascripttutorial.net/javascript-dom/javascript-select-box/ 
