@@ -95,11 +95,11 @@
     10) Implementar una función para el botón "Listar clientes CSV" que muestre todos los clientes del banco por 
         consola. Se deberá mostrar en el formato "Apellido1, Nombre1; Apellido2, Nombre2; Apellido3, Nombre3; etc.".
         NOTA: CSV es un formato estándar de manejo de información. Viene de "valores separados por comas" y se utiliza
-        muchísimo en programas como Excel.
+        muchísimo en programas como Excel. --YA ESTA--
 
     11) Implementar una función para el botón "Listar morosos" que muestre todos los clientes del banco que tengan
         su cuenta en pesos con saldo negativo en una tabla. Indicar en la misma los datos que usted quiera, mínimamente 
-        apellido y DNI.
+        apellido y DNI. --YA ESTA--
 
     12) A partir del texto ingresado en un cuadro de texto, implementar una función que me permita buscar un cliente
         por su nombre o su DNI. Todas las coincidencias que encuentre las deberá mostrar en una tabla.
@@ -186,7 +186,7 @@ class Cliente{
         }else if(typeof identificadorCuenta == 'object'){
             identificadorCuenta.ingresarDinero(unaCantidad,'saldoEnPesos');
         }else{
-            console.log("El identificador ingreasado no existe (no es ni el dni ni el objeto)")
+            console.log("El identificador ingresado no existe (no es ni el dni ni el objeto)")
         }
     }
     
@@ -222,9 +222,57 @@ const cliente3 = new Cliente(40654321, 'Julieta', 'Albornoz', 7300, 5000);
 
 clientesBanco.push(cliente1,cliente2,cliente3);
 
+function tablaInfoCuenta(idHTML, unCliente){
+    let infoCuenta = document.getElementById(idHTML).innerHTML;
 
-// ------------------------------------- OBTENER DATOS -----------------------------------------------
+    
+    infoCuenta = `
+    <h3>Información de la cuenta</h3>
+    <h5>Cliente solicitado:</h5>
+    <ul>
 
+        <li>DNI: <b>${unCliente.dni}</b></li>
+        <li>Apellido: <b>${unCliente.apellido}</b></li>
+        <li>Nombre: <b>${unCliente.nombre}</b></li>
+        <li>Saldo en cuenta en pesos: <b>$ ${unCliente.saldoEnPesos}</b></li>
+        <li>Saldo en cuenta en dólares: <b>U$S ${unCliente.saldoEnDolares}</b></li>
+        <li>Saldo pendiente de pago en la tarjeta: <b>$ ${unCliente.saldoAPagarTarjeta}</b></li>
+    `
+
+    if(unCliente.consumosTajeta.length === 0){
+
+        infoCuenta += `
+            <li>Últimos consumos: <b>Aún no hay consumos</b></li>
+        </ul>`
+    }else{
+        infoCuenta += `
+            <li>Últimos consumos:</li>
+        </ul>
+        <table class="table">
+            <thead><bold>
+                <tr>
+                    <th>Local</th>
+                    <th>Consumo</th>
+                </tr>
+            <bold></thead>
+        <tbody id="tableBody">`
+
+
+        for(let i=0 ; unCliente.consumosTajeta.length>i ; i++){
+            infoCuenta += `
+            <tr>
+                <td>${unCliente.consumosTajeta[i].compra}</td>
+                <td>${unCliente.consumosTajeta[i].monto}</td>
+
+            </tr>`
+        }
+
+        infoCuenta += `</tbody>`
+    }
+
+
+    document.getElementById(idHTML).innerHTML = infoCuenta;
+}
 
 function obtenerDatos(queCuenta,mayorOMenor){
 
@@ -250,49 +298,9 @@ function obtenerDatos(queCuenta,mayorOMenor){
     
     // -----------------------------------------------------------------
 
-    let infoCuenta = document.getElementById("infoCuenta").innerHTML;
+    tablaInfoCuenta("infoCuenta",cliente)
     
-    infoCuenta = `
-    <h3>Información de la cuenta</h3>
-    <h5>Cliente solicitado:</h5>
-    <ul>
-        <li>DNI: <b>${cliente.dni}</b></li>
-        <li>Apellido: <b>${cliente.apellido}</b></li>
-        <li>Nombre: <b>${cliente.nombre}</b></li>
-        <li>Saldo en cuenta en pesos: <b>$ ${cliente.saldoEnPesos}</b></li>
-        <li>Saldo en cuenta en dólares: <b>U$S ${cliente.saldoEnDolares}</b></li>
-        <li>Saldo pendiente de pago en la tarjeta: <b>$ ${cliente.saldoAPagarTarjeta}</b></li>
-    `
 
-    if(cliente.consumosTajeta.length === 0){
-        infoCuenta += `
-            <li>Últimos consumos: <b>Aún no hay consumos</b></li>
-        </ul>`
-    }else{
-        infoCuenta += `
-            <li>Últimos consumos:</li>
-        </ul>
-        <table class="table">
-            <thead><bold>
-                <tr>
-                    <th>Local</th>
-                    <th>Consumo</th>
-                </tr>
-            <bold></thead>
-        <tbody id="tableBody">`
-
-        for(let i=0 ; cliente.consumosTajeta.length>i ; i++){
-            infoCuenta += `
-            <tr>
-                <td>${cliente.consumosTajeta[i].compra}</td>
-                <td>${cliente.consumosTajeta[i].monto}</td>
-            </tr>`
-        }
-
-        infoCuenta += `</tbody>`
-    }
-
-    document.getElementById("infoCuenta").innerHTML = infoCuenta;
 }
 
 function obtenerMayor(){
@@ -312,13 +320,11 @@ function obtenerMenorDolares(){
 }
 
 
-// ---------------------------------------------------------------------------------------------------
+function tabla(idHTML, lista){
+    unaTabla = document.getElementById(idHTML).innerHTML
+    unaTabla = 
+    `
 
-// ------------------------------------- LISTAR DATOS -----------------------------------------------
-
-function listarClientes(){
-    tablaClientes = document.getElementById("listadoClientes").innerHTML
-    tablaClientes += `
     <thead>
     <tr>
         <th>DNI</th>
@@ -329,15 +335,20 @@ function listarClientes(){
     <tbody>
     `
 
-    for(let i=0 ; clientesBanco.length>i ; i++){
-        tablaClientes += `
-        <tr>
-        <td> <b>${clientesBanco[i].dni}</b> </td>
-        <td> ${clientesBanco[i].apellido} </td>
-        <td> ${clientesBanco[i].nombre} </td>
+    for(let i=0 ; lista.length>i ; i++){
+        unaTabla += `
+        <tr >
+        <td <button class=form-group onclick= "${infoDetallada(lista[i])}"> <b>${lista[i].dni}</b> </td>
+        <td> ${lista[i].apellido} </td>
+        <td> ${lista[i].nombre} </td>
         `
     }
-    document.getElementById("listadoClientes").innerHTML = tablaClientes
+
+    document.getElementById(idHTML).innerHTML = unaTabla
+}
+
+function listarClientes(){
+    tabla("listadoClientes",clientesBanco)
 }
 
 
@@ -365,32 +376,10 @@ function listarClientesCSV(){
 }
 
 function listarMorosos(){
-    let listadoMorosos= clientesBanco.map(i => indexOf(clientesBanco[i].saldoEnPesos<0));
 
-    tablaMorosos = document.getElementById("listadoMorosos").innerHTML
-    tablaMorosos += `
-    <thead>
-    <tr>
-        <th>DNI</th>
-        <th>Apellido</th>
-        <th>Nombre</th>
-    </tr>
-    </thead>
-    <tbody>
-    `
-
-    for(let i=0 ; listadoMorosos.length>i ; i++){
-        tablaClientes += `
-        <tr>
-        <td> <b>${listadoMorosos[i].dni}</b> </td>
-        <td> ${listadoMorosos[i].apellido} </td>
-        <td> ${listadoMorosos[i].nombre} </td>
-        `
-    }
-    document.getElementById("listadoMorosos").innerHTML = tablaMorosos
+    let listadoMorosos= clientesBanco.filter(i => i.saldoEnPesos<0);
+    tabla("listadoMorosos",listadoMorosos)
 }
-
-// --------------------------------------------------------------------------------------------------
 
 
 // ------------------------------------- FUNCIONES OPCIONALES --------------------------------------------
@@ -427,3 +416,68 @@ function agregarDatos(){
 // ------------------------------------------------------------------------------------------------------
 
 // pagina que puede servir opa https://www.javascripttutorial.net/javascript-dom/javascript-select-box/ 
+
+function buscarCliente(){
+    let input = (document.getElementsByName("buscarCliente")[0].value)
+    
+    if("1234567890".includes(input)){
+            input = parseInt(input) 
+    }
+    
+    if (typeof input == "number"){
+        let coincidencias= clientesBanco.filter(i  => String(i.dni).includes(input));
+        tabla("listadoCoincidencias",coincidencias)
+    }else{
+        let coincidencias =  clientesBanco.filter(i  => (i.nombre).includes(input));
+        tabla("listadoCoincidencias",coincidencias)
+    }
+    
+}
+
+function infoDetallada(cliente){
+    tablaInfoCuenta("infoCuenta",cliente)
+}
+
+function selectClienteTransfiere(){
+    desdeQuien = document.getElementById("clientesDesde").innerHTML
+    let cantidadOptions = document.getElementById("clientesDesde").length;
+    for (let i=cantidadOptions;clientesBanco.length>i;i++){
+        desdeQuien+= `<option value="${clientesBanco[i].dni}">${clientesBanco[i].dni}</option>`
+    }
+    
+    document.getElementById("clientesDesde").onchange = function(){
+        clienteDesde = document.getElementById("clientesDesde").value;
+        console.log(clienteDesde)
+    };
+    
+    document.getElementById("clientesDesde").innerHTML = desdeQuien
+}
+
+function selectClienteATransferir(){
+    aQuien = document.getElementById("clientesHasta").innerHTML
+    let cantidadOptions = document.getElementById("clientesHasta").length;
+    for (let i=cantidadOptions;clientesBanco.length>i;i++){
+        aQuien+= `<option value="${clientesBanco[i].dni}">${clientesBanco[i].dni}</option>`
+    }
+    
+    document.getElementById("clientesHasta").onchange = function(){
+        clienteHasta = document.getElementById("clientesHasta").value;
+        console.log(clienteHasta)
+    };
+    
+    document.getElementById("clientesHasta").innerHTML = aQuien
+}
+function clienteSegunDni(unDni){
+    for(let i=0;clientesBanco.length>i;i++){
+        if(clientesBanco[i].dni == unDni){
+            return clientesBanco[i]
+        }
+    }
+}
+
+function transferir(){
+    let monto = (document.getElementsByName("monto")[0].value)
+    (clienteSegunDni(clienteDesde)).transferirDinero(clienteSegunDni(clienteHasta),monto)
+}
+
+buscarCliente()
