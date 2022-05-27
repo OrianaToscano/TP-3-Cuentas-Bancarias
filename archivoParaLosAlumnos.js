@@ -247,6 +247,7 @@ function listarClientes(){
 }
 
 
+
 function listarClientesCSV(){
     console.log(clientesBanco)
     let listadoCSV="";
@@ -257,3 +258,43 @@ function listarClientesCSV(){
     console.log(listadoCSV);
 }
 
+
+function listarClientesCSV(){
+    console.log(clientesBanco)
+    let listadoCSV="";
+    for(let i=0;clientesBanco.length>i;i++){
+        listadoCSV += `${clientesBanco[i].apellido}, ${clientesBanco[i].nombre}`;
+        (i != clientesBanco.length-1)&&(listadoCSV+=`; `);
+    };
+    console.log(listadoCSV);
+}
+
+function listarMorosos(){
+    let listadoMorosos=[];
+    for(let i=0;clientesBanco.length>i;i++){
+        if (clientesBanco[i].saldoEnPesos<0){
+            listadoMorosos.push(clientesBanco[i]);
+        }
+    }
+    tablaMorosos = document.getElementById("listadoMorosos").innerHTML
+    tablaMorosos += `
+    <thead>
+    <tr>
+        <th>DNI</th>
+        <th>Apellido</th>
+        <th>Nombre</th>
+    </tr>
+    </thead>
+    <tbody>
+    `
+
+    for(let i=0 ; listadoMorosos.length>i ; i++){
+        tablaClientes += `
+        <tr>
+        <td> <b>${listadoMorosos[i].dni}</b> </td>
+        <td> ${listadoMorosos[i].apellido} </td>
+        <td> ${listadoMorosos[i].nombre} </td>
+        `
+    }
+    document.getElementById("listadoMorosos").innerHTML = tablaMorosos
+}
